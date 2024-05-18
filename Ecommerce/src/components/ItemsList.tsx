@@ -32,7 +32,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ name, price, image }) => (
         elevation={4}
         category="medium"
         style={styles.item}>
-      <Image source={{uri: image}} style={styles.image} />
+      <Image source={ {uri: image, headers: { 'Accept': 'image/*'}} } style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.price}>{price}</Text>
