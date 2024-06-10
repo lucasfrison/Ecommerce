@@ -1,3 +1,4 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {Avatar, Button} from '@react-native-material/core';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from "react";
@@ -9,13 +10,22 @@ import {
     AppBar,
     IconButton,
 } from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { NavigationContainer } from '@react-navigation/native';
+import ProductDetailScreen from "./src/components/ProductDetailScreen";
+import Index from "./src/components/Index";
 
+const Stack = createNativeStackNavigator()
 
 export default function App() {
     const [revealed, setRevealed] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={Index} />
+          <Stack.Screen name="Product Details" component={ProductDetailScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
         <View style={styles.container}>
             <Backdrop
                 revealed={revealed}
