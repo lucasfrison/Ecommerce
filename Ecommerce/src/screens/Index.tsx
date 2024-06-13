@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Avatar, Button} from '@react-native-material/core';
-import {StatusBar} from 'expo-status-bar';
 import {StyleSheet, View} from 'react-native';
 import ProductListScreen from "../components/ItemsList";
 import {
@@ -20,7 +19,6 @@ export default function Index({navigation}: { navigation: any }) {
                 revealed={revealed}
                 header={
                     <AppBar
-                        title="Screen title"
                         transparent
                         leading={props => (
                             <IconButton
@@ -52,16 +50,22 @@ export default function Index({navigation}: { navigation: any }) {
                         }
                     />
                 }
-                backLayer={<View style={{height: 50}}>
-                    <View>
-                        <IconButton icon={props => <Icon name="cart" {...props} />}
-                                    color="white"
-                                    onPress={() => navigation.navigate('Cart', {})}
+                backLayer={
+                    <View style={{ height: 50, flexDirection: 'row', alignItems: 'center' }}>
+                        <IconButton
+                            icon={props => <Icon name="cart" {...props} />}
+                            color="white"
+                            onPress={() => navigation.navigate('Cart')}
+                        />
+                        <IconButton
+                            icon={props => <Icon name="plus" {...props} />}
+                            color="white"
+                            onPress={() => navigation.navigate('Products Registration')}
                         />
                     </View>
-                </View>}
+                }
             >
-                <BackdropSubheader title="Produtos"/>
+                <BackdropSubheader title="Products"/>
                 <ProductListScreen></ProductListScreen>
             </Backdrop>
         </View>

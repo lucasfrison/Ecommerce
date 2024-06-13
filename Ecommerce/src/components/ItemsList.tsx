@@ -43,7 +43,7 @@ const ProductItem: React.FC<ProductItemProps> = ({id, name, price, image}) => {
                 <Text style={styles.name}>{name}</Text>
                 <Text style={styles.price}>{price}</Text>
                 <Button
-                    title="Detalhes"
+                    title="Details"
                     onPress={() => navigation.navigate('Product Details', {
                         productId: id,
                         name: name,
