@@ -1,17 +1,11 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import React, {useState} from "react";
-import {StyleSheet, Text, TextComponent, TextInput, View} from 'react-native';
-import ProductListScreen from "./src/components/ItemsList";
-import {
-    Backdrop,
-    BackdropSubheader,
-    AppBar,
-    IconButton,
-} from "@react-native-material/core";
+import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import ProductDetailScreen from "./src/components/ProductDetailScreen";
-import Index from "./src/components/Index";
-import Cart from "./src/components/cart";
+import ProductDetailScreen from "./src/screens/ProductDetailScreen";
+import Index from "./src/screens/Index";
+import Cart from "./src/screens/cart";
+import CrudProducts from "./src/screens/CrudProducts";
 
 const Stack = createNativeStackNavigator()
 
@@ -37,6 +31,7 @@ export default function App() {
                 <Stack.Screen name="Home" component={Index}/>
                 <Stack.Screen name="Product Details" component={ProductDetailScreen}/>
                 <Stack.Screen name="Cart" component={Cart}/>
+                <Stack.Screen name="Products Registration" component={CrudProducts}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
