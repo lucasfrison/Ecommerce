@@ -65,7 +65,6 @@ export default function Index({navigation}: { navigation: any }) {
                     </View>
                 }
             >
-                <BackdropSubheader title="Products"/>
                 <ProductListScreen></ProductListScreen>
             </Backdrop>
         </View>

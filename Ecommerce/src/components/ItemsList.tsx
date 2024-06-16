@@ -1,55 +1,52 @@
-import React from 'react';
-import {Button, Surface} from "@react-native-material/core";
-import {View, Text, FlatList, Image, StyleSheet, Dimensions, ScrollView} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Button, Surface } from "@react-native-material/core";
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 let width = Dimensions.get('window').width; // full width
-let height = Dimensions.get('window').height; // full height
 const numColumns = 2;
 
 interface Product {
-    id: number;
+    id: string;
     name: string;
     price: string;
-    image: string;
+    description: string;
+    images: string[] | null;
 }
 
-const products: Product[] = [
-    {id: 1, name: 'Product 1', price: '$10', image: '../../assets/produtos/img2.png'},
-    {id: 2, name: 'Product 2', price: '$20', image: '../../assets/produtos/img2.png'},
-    {id: 3, name: 'PlayStation 3', price: '$30', image: '../../assets/produtos/img3.jpg'},
-    {id: 4, name: 'Product 4', price: '$40', image: '../../assets/produtos/img2.png'},
-    {id: 5, name: 'Product 5', price: '$50', image: '../../assets/produtos/img2.png'},
-];
-
-interface ProductItemProps {
-    id: number;
-    name: string;
-    price: string;
-    image: string;
-}
-
-const ProductItem: React.FC<ProductItemProps> = ({id, name, price, image}) => {
+const ProductItem: React.FC<Product> = ({ id, name, price, images, description }) => {
     const navigation = useNavigation<StackNavigationProp<any>>();
+
+    const handlePress = () => {
+        navigation.navigate('Product Details', {
+            productId: id,
+            name: name,
+            price: price,
+            description: description,
+            images: images,
+        });
+    };
 
     return (
         <Surface
             elevation={4}
             category="medium"
             style={styles.item}>
-            <Image source={{uri: image, headers: {'Accept': 'image/*'}}} style={styles.image}/>
+            {images && images.length > 0 ? (
+                <Image source={{ uri: images[0] }} style={styles.image} />
+            ) : (
+                <View style={[styles.image, styles.noImage]}>
+                    <Text>No Image Available</Text>
+                </View>
+            )}
             <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{name}</Text>
                 <Text style={styles.price}>{price}</Text>
                 <Button
                     title="Details"
-                    onPress={() => navigation.navigate('Product Details', {
-                        productId: id,
-                        name: name,
-                        image: image,
-                        price: price
-                    })}
+                    onPress={handlePress}
                 />
             </View>
         </Surface>
@@ -57,16 +54,49 @@ const ProductItem: React.FC<ProductItemProps> = ({id, name, price, image}) => {
 };
 
 const ProductListScreen: React.FC = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/products');
+                setProducts(response.data);
+            } catch (err) {
+                setError('Failed to fetch products');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    if (loading) {
+        return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
+    }
+
+    if (error) {
+        return <Text style={styles.errorText}>{error}</Text>;
+    }
+
     return (
-        <ScrollView>
-          <FlatList
-              data={products}
-              renderItem={({item}) => <ProductItem id={item.id} name={item.name} price={item.price} image={item.image}/>}
-              keyExtractor={item => item.id.toString()}
-              numColumns={2}
-              contentContainerStyle={styles.flatList}
-          />
-        </ScrollView>
+        <FlatList
+            data={products}
+            renderItem={({ item }) => (
+                <ProductItem
+                    id={item.id}
+                    name={item.name}
+                    price={item.price}
+                    images={item.images}
+                    description={item.description}
+                />
+            )}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            contentContainerStyle={styles.flatList}
+        />
     );
 };
 
@@ -78,7 +108,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: itemMargin,
         paddingTop: itemMargin,
         flex: 1,
-        justifyContent: 'flex-start', // Adjusts the container's height based on its children
+        justifyContent: 'flex-start',
     },
     item: {
         margin: itemMargin,
@@ -94,6 +124,11 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
     },
+    noImage: {
+        backgroundColor: '#eee',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     detailsContainer: {
         flex: 1,
         padding: 10,
@@ -105,6 +140,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginTop: 5,
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 20,
     },
 });
 
