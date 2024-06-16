@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View, FlatList, Button, Modal, StyleSheet, Dimensions, ScrollView, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, Button, Modal, StyleSheet, Dimensions, ScrollView, Image, Alert } from 'react-native';
 import ProductForm from '../components/ProductForm';
 import { Product, NewProduct } from '../types/Product';
 import { Surface, Text } from "@react-native-material/core";
+import { getAllProducts, createProduct, updateProduct, deleteProduct } from '../services/ProductService';
 
 const numColumns = 2;
 let width = Dimensions.get('window').width; // full width
@@ -11,6 +12,19 @@ const CrudProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const data = await getAllProducts();
+      setProducts(data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch products');
+    }
+  };
 
   const handleAddProduct = () => {
     setCurrentProduct(null);
@@ -22,22 +36,36 @@ const CrudProducts: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleDeleteProduct = (id: string) => {
-    setProducts(products.filter(product => product.id !== id));
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteProduct(id);
+      setProducts(products.filter(product => product.id !== id));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete product');
+    }
   };
 
-  const handleSubmit = (product: NewProduct) => {
-    if (currentProduct) {
-      setProducts(products.map(p => p.id === currentProduct.id ? { ...product, id: currentProduct.id } : p));
-    } else {
-      setProducts([...products, { ...product, id: Date.now().toString() }]);
+  const handleSubmit = async (product: NewProduct) => {
+    try {
+      if (currentProduct) {
+        await updateProduct(currentProduct.id, product);
+        setProducts(products.map(p => p.id === currentProduct.id ? { ...product, id: currentProduct.id } : p));
+      } else {
+        const newProduct = await createProduct(product);
+        setProducts([...products, newProduct]);
+      }
+      setIsModalVisible(false);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save product');
     }
-    setIsModalVisible(false);
   };
 
   const renderProductItem = ({ item }: { item: Product }) => (
     <Surface style={styles.item}>
-      <Image source={{ uri: item.image[0], headers: { 'Accept': 'image/*' } }} style={styles.image} />
+      <Image 
+        source={{ uri: item.image?.[0] ?? 'default_image_url', headers: { 'Accept': 'image/*' } }} 
+        style={styles.image} 
+      />
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{item.name}</Text>
         <Button

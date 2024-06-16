@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { NewProduct } from '../types/Product';
 
 interface ProductFormProps {
@@ -11,14 +11,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) =>
   const [name, setName] = useState(initialValues?.name || '');
   const [description, setDescription] = useState(initialValues?.description || '');
   const [price, setPrice] = useState(initialValues?.price?.toString() || '');
-  const [image, setImage] = useState(initialValues?.image[0] || '');
+  const [image, setImage] = useState((initialValues?.image && initialValues.image[0]) || '');
 
   const handleSave = () => {
     const product: NewProduct = {
       name,
       description,
       price: parseFloat(price),
-      image: [image]
+      image: image ? [image] : []
     };
     onSubmit(product);
   };
@@ -27,7 +27,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) =>
     setName(initialValues?.name || '');
     setDescription(initialValues?.description || '');
     setPrice(initialValues?.price?.toString() || '');
-    setImage(initialValues?.image[0] || '');
+    setImage((initialValues?.image && initialValues.image[0]) || '');
   };
 
   return (
