@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
-import { Surface, IconButton } from "@react-native-material/core";
+import { View, Text, Image, StyleSheet, Dimensions, Alert } from 'react-native';
+import { Surface, Button } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Product } from '../types/Product';
 
 const numColumns = 2;
@@ -43,12 +42,17 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onEdit, onDelete }) 
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.price}>{product.price}</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => onEdit(product)} style={styles.editButton}>
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
-          <IconButton
-            icon={<Icon name="trash-can-outline" size={24} color="red" />}
+          <Button
+            title="Edit"
+            onPress={() => onEdit(product)}
+            style={styles.button}
+            color="#6200EE"
+          />
+          <Button
+            title="Delete"
             onPress={handleDeletePress}
+            style={styles.button}
+            color="#6200EE"
           />
         </View>
       </View>
@@ -91,15 +95,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 10,
   },
-  editButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-  },
-  editButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  button: {
+    width: 80,
+    height: 36,
+    justifyContent: 'center',
+    borderRadius: 8,
   },
 });
 

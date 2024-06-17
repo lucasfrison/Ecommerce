@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Button, Modal, StyleSheet, Dimensions, ScrollView, Image, Alert } from 'react-native';
+import { View, FlatList, Modal, StyleSheet, Dimensions, Image, Alert } from 'react-native';
 import ProductForm from '../components/ProductForm';
 import { Product, NewProduct } from '../types/Product';
-import { Surface, Text } from "@react-native-material/core";
+import { Surface, Button, Text } from "@react-native-material/core";
 import { getAllProducts, createProduct, updateProduct, deleteProduct } from '../services/ProductService';
 
 const numColumns = 2;
@@ -71,10 +71,14 @@ const CrudProducts: React.FC = () => {
         <Button
           title="Edit"
           onPress={() => handleEditProduct(item)}
+          style={styles.button}
+          color="#6200EE"
         />
         <Button
           title="Delete"
           onPress={() => handleDeleteProduct(item.id)}
+          style={styles.button}
+          color="#6200EE"
         />
       </View>
     </Surface>
@@ -82,16 +86,15 @@ const CrudProducts: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Button title="Add Product" onPress={handleAddProduct} />
-      <ScrollView>
-        <FlatList
-          data={products}
-          renderItem={renderProductItem}
-          keyExtractor={(item) => item.id}
-          numColumns={numColumns}
-          contentContainerStyle={styles.flatList}
-        />
-      </ScrollView>
+      <Button title="Add Product" onPress={handleAddProduct} color="#6200EE" />
+      <FlatList
+        data={products}
+        renderItem={renderProductItem}
+        keyExtractor={(item) => item.id}
+        numColumns={numColumns}
+        contentContainerStyle={styles.flatList}
+        columnWrapperStyle={styles.columnWrapper}
+      />
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modal}>
           <ProductForm
@@ -117,21 +120,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   flatList: {
-    paddingHorizontal: itemMargin,
-    paddingTop: itemMargin,
-    flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    paddingVertical: itemMargin,
+  },
+  columnWrapper: {
+    justifyContent: 'space-around',
   },
   item: {
-    margin: itemMargin,
-    marginBottom: 0,
+    margin: itemMargin / 2,
     borderRadius: 8,
     backgroundColor: '#fff',
     elevation: 3,
+    width: itemWidth,
   },
   image: {
     resizeMode: 'cover',
-    width: itemWidth - 15,
+    width: itemWidth,
     height: itemWidth,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -143,10 +147,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
   },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  button: {
     marginTop: 5,
+    justifyContent: 'center',
+    borderRadius: 8,
   },
 });
 

@@ -43,7 +43,7 @@ const ProductItem: React.FC<Product> = ({ id, name, price, images, description }
             )}
             <View style={styles.detailsContainer}>
                 <Text style={styles.name}>{name}</Text>
-                <Text style={styles.price}>{price}</Text>
+                <Text style={styles.price}>R${price}</Text>
                 <Button
                     title="Details"
                     onPress={handlePress}
