@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import ProductListScreen from "../components/ItemsList";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { Avatar, Button } from '@react-native-material/core';
+import { Backdrop, AppBar, IconButton,} from "@react-native-material/core";
 
 export default function Index({ navigation }: { navigation: any }) {
     return (
