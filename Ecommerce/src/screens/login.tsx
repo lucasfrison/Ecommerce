@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button } from "@react-native-material/core";
-import axios from 'axios';
+import { login } from '../services/AuthService';
+import { NewUser, User } from '../types/User';
 
-const LoginScreen: React.FC = ({ navigation }) => {
+const Login: React.FC = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -14,10 +15,10 @@ const LoginScreen: React.FC = ({ navigation }) => {
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/login', loginDto);
-            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${response.data.name}`);
+            const NewUser = await login(User);
+            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${NewUser.name}`);
         } catch (error) {
-            Alert.alert('Erro no login');
+            Alert.alert(error.message);
         }
     };
 
@@ -73,4 +74,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default Login;
