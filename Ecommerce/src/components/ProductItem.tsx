@@ -33,7 +33,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onEdit, onDelete }) 
         }
       ]
     );
-  };
+  };  
 
   return (
     <Surface style={styles.item}>

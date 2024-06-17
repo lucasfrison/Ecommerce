@@ -16,6 +16,10 @@ interface Product {
     images: string[] | null;
 }
 
+interface ProductListScreenProps {
+    searchQuery: string;
+}
+
 const ProductItem: React.FC<Product> = ({ id, name, price, images, description }) => {
     const navigation = useNavigation<StackNavigationProp<any>>();
 
@@ -53,7 +57,7 @@ const ProductItem: React.FC<Product> = ({ id, name, price, images, description }
     );
 };
 
-const ProductListScreen: React.FC = () => {
+const ProductListScreen: React.FC<ProductListScreenProps> = ({ searchQuery }) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -73,6 +77,10 @@ const ProductListScreen: React.FC = () => {
         fetchProducts();
     }, []);
 
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />;
     }
@@ -83,7 +91,7 @@ const ProductListScreen: React.FC = () => {
 
     return (
         <FlatList
-            data={products}
+            data={filteredProducts}
             renderItem={({ item }) => (
                 <ProductItem
                     id={item.id}
