@@ -60,6 +60,10 @@ const CrudProducts: React.FC = () => {
     }
   };
 
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const renderProductItem = ({ item }: { item: Product }) => (
     <Surface style={styles.item}>
       <Image 
@@ -94,12 +98,14 @@ const CrudProducts: React.FC = () => {
         numColumns={numColumns}
         contentContainerStyle={styles.flatList}
         columnWrapperStyle={styles.columnWrapper}
+        extraData={products}
       />
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modal}>
           <ProductForm
             initialValues={currentProduct ?? undefined}
             onSubmit={handleSubmit}
+            onCancel={handleCancel}
           />
         </View>
       </Modal>

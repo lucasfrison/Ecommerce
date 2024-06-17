@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { NewProduct } from '../types/Product';
+import { useNavigation } from '@react-navigation/native';
 
 interface ProductFormProps {
   initialValues?: NewProduct;
   onSubmit: (product: NewProduct) => void;
+  onCancel: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) => {
+const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCancel }) => {
   const [name, setName] = useState(initialValues?.name || '');
   const [description, setDescription] = useState(initialValues?.description || '');
   const [price, setPrice] = useState(initialValues?.price?.toString() || '');
@@ -65,7 +67,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) =>
         />
         <Button
           title="Cancel"
-          onPress={handleReset}
+          onPress={() => {
+            handleReset();
+            onCancel();
+          }}
           color="#888"
         />
       </View>
