@@ -14,9 +14,8 @@ const LoginScreen: React.FC = ({ navigation }) => {
         };
 
         try {
-            const response = await axios.post('http://seu-backend-url.com/login', loginDto);
+            const response = await axios.post('http://localhost:5000/login', loginDto);
             Alert.alert('Login realizado com sucesso', `Bem-vindo, ${response.data.name}`);
-            // Redirecionar para outra tela após login bem-sucedido
         } catch (error) {
             Alert.alert('Erro no login');
         }
