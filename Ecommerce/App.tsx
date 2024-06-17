@@ -1,17 +1,18 @@
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {useState} from "react";
-import {StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import ProductDetailScreen from "./src/screens/ProductDetailScreen";
 import Index from "./src/screens/Index";
 import Cart from "./src/screens/cart";
 import CrudProducts from "./src/screens/CrudProducts";
+import { IconButton, Avatar } from "@react-native-material/core";
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-    const [revealed, setRevealed] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -28,10 +29,31 @@ export default function App() {
                     },
                 }}
             >
-                <Stack.Screen name="Home" component={Index}/>
-                <Stack.Screen name="Product Details" component={ProductDetailScreen}/>
-                <Stack.Screen name="Cart" component={Cart}/>
-                <Stack.Screen name="Products Registration" component={CrudProducts}/>
+                <Stack.Screen
+                    name="Home"
+                    component={Index}
+                    options={{
+                        headerRight: () => (
+                            loggedIn ? (
+                                <IconButton
+                                    icon={<Avatar label="Yaman KATBY" size={28} />}
+                                    onPress={() => setLoggedIn(false)}
+                                    style={styles.iconButton}
+                                />
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={() => setLoggedIn(true)}
+                                    style={styles.loginButton}
+                                >
+                                    <Text style={styles.loginButtonText}>Login</Text>
+                                </TouchableOpacity>
+                            )
+                        ),
+                    }}
+                />
+                <Stack.Screen name="Product Details" component={ProductDetailScreen} />
+                <Stack.Screen name="Cart" component={Cart} />
+                <Stack.Screen name="Products Registration" component={CrudProducts} />
             </Stack.Navigator>
         </NavigationContainer>
     );
@@ -42,4 +64,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f0f0f0', // Example background color
     },
-})
+    loginButton: {
+        marginRight: 16,
+        padding: 8,
+        backgroundColor: '#6200EE',
+        borderRadius: 4,
+    },
+    loginButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    iconButton: {
+        marginRight: 16,
+    },
+});
