@@ -33,16 +33,16 @@ export default function App({ navigation }: { navigation: any }) {
                 <Stack.Screen
                     name="Home"
                     component={Index}
-                    options={{
+                    options={({ navigation }) => ({
                         headerRight: () => (
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('Login')}
-                                    style={styles.loginButton}
-                                >
-                                    <Text style={styles.loginButtonText}>Login</Text>
-                                </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Login')}
+                                style={styles.loginButton}
+                            >
+                                <Text style={styles.loginButtonText}>Login</Text>
+                            </TouchableOpacity>
                         ),
-                    }}
+                    })}
                 />
                 <Stack.Screen name="Product Details" component={ProductDetailScreen} />
                 <Stack.Screen name="Cart" component={Cart} />

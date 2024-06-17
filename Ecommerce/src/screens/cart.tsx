@@ -46,7 +46,6 @@ const ProductItem: React.FC<ProductItemProps> = ({id, name, price, image}) => {
 const Cart: React.FC = () => {
 
     const route = useRoute<ProductDetailScreenRouteProp>();
-    const {productId, name, price, image} = route.params;
 
     interface Product {
         id: number;
