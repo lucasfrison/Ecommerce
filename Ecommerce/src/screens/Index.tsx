@@ -1,18 +1,18 @@
-import React, {useState} from "react";
-import {Avatar, Button} from '@react-native-material/core';
-import {StyleSheet, View} from 'react-native';
+import React, { useState } from "react";
+import { Avatar, Button } from '@react-native-material/core';
+import { StyleSheet, View } from 'react-native';
 import ProductListScreen from "../components/ItemsList";
 import {
     Backdrop,
-    BackdropSubheader,
     AppBar,
     IconButton,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-export default function Index({navigation}: { navigation: any }) {
+export default function Index({ navigation }: { navigation: any }) {
     const [revealed, setRevealed] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+
     return (
         <View style={styles.container}>
             <Backdrop
@@ -27,13 +27,12 @@ export default function Index({navigation}: { navigation: any }) {
                                 )}
                                 onPress={() => setRevealed(prevState => !prevState)}
                                 {...props}
-
                             />
                         )}
                         trailing={props =>
                             loggedIn ? (
                                 <IconButton
-                                    icon={<Avatar label="Yaman KATBY" size={28}/>}
+                                    icon={<Avatar label="Yaman KATBY" size={28} />}
                                     onPress={() => setLoggedIn(!loggedIn)}
                                     {...props}
                                 />
@@ -42,8 +41,8 @@ export default function Index({navigation}: { navigation: any }) {
                                     variant="text"
                                     title="Login"
                                     compact
-                                    style={{marginEnd: 4}}
-                                    onPress={() => setLoggedIn(!loggedIn)}
+                                    style={{ marginEnd: 4 }}
+                                    onPress={() => navigation.navigate('Login')}
                                     {...props}
                                 />
                             )
