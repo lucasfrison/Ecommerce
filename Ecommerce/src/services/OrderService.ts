@@ -1,6 +1,17 @@
+import axios from 'axios';
+import { Orders } from '../types/Orders';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const api = axios.create({
+  baseURL: 'http://localhost:5000/orders',
+});
+
 const BASE_URL = 'http://localhost:5000/orders';
+
+export const getAllOrders = async (): Promise<Orders[]> => {
+  const response = await api.get('/');
+  return response.data;
+}
 
 export const createOrder = async (total: number, orderItems: any[]) => {
   try {
