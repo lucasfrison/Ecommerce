@@ -52,11 +52,6 @@ const Login: React.FC = () => {
         onPress={() => navigation.navigate('Register')}
         style={styles.registerButton}
       />
-      <Button
-                title="Editar Perfil"
-                onPress={() => navigation.navigate('UserList')}
-                style={styles.registerButton}
-            />
     </ScrollView>
   );
 };

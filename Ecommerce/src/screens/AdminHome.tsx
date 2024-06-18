@@ -10,6 +10,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 type RootStackParamList = {
   Payment: undefined;
   'Products Registration': undefined;
+  'UserList' : undefined;
 };
 
 type AdminHomeNavigationProp = StackNavigationProp<RootStackParamList, 'Products Registration'>;
@@ -53,6 +54,10 @@ const AdminHome: React.FC = () => {
     navigation.navigate('Products Registration');
   };
 
+  const navigateToUserList = () => {
+    navigation.navigate('UserList');
+  };
+
   return (
     <View style={styles.container}>
       <Surface elevation={6} category="medium" style={styles.orderInner}>
@@ -81,6 +86,10 @@ const AdminHome: React.FC = () => {
         <TouchableOpacity style={styles.button} onPress={navigateToProductsRegistration}>
           <AntDesign name="plus" size={28} color="white" />
           <Text style={styles.buttonText}>Product Registration</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={navigateToUserList}>
+          <AntDesign name="plus" size={28} color="white" />
+          <Text style={styles.buttonText}>List of Users</Text>
         </TouchableOpacity>
       </View>
     </View>
