@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { NewUser } from '../types/Auth';
-
+import { NewUser } from '../types/User';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/users',
 });
-
 
 export const createUser = async (user: NewUser) => {
   const response = await api.post('/', user);
@@ -28,11 +26,11 @@ export const getUserById = async (id: string) => {
 };
 
 export const getUserByName = async (name: string) => {
-  const response = await api.get(`/${name}`);
+  const response = await api.get(`/name/${name}`);
   return response.data;
 };
 
 export const getUserByEmail = async (email: string) => {
-  const response = await api.get(`/${email}`);
+  const response = await api.get(`/email/${email}`);
   return response.data;
 };

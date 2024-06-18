@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button } from "@react-native-material/core";
-import { createUser } from '../services/UserService'; 
+import { createUser } from '../services/UserService';
+import { NewUser } from '../types/User';
+
 const RegisterScreen: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,23 +15,29 @@ const RegisterScreen: React.FC = () => {
   const [address, setAddress] = useState('');
 
   const handleRegister = async () => {
-    const userDto = {
+    const newUser: NewUser = {
       name,
       email,
+      password,
       phone,
       postalCode,
       state,
       city,
       address,
-      profileType: 'USER',
+      profileType: 'USER' // Defina o tipo de perfil conforme necessário
     };
 
     try {
-      const userData = await createUser();
+      const userData = await createUser(newUser);
       Alert.alert('Cadastro realizado com sucesso', `Bem-vindo, ${userData.name}`);
     } catch (error) {
       console.error(error); 
-      Alert.alert(error.message);
+
+      if (error instanceof Error) {
+        Alert.alert('Erro', error.message);
+      } else {
+        Alert.alert('Erro', 'Ocorreu um erro desconhecido.');
+      }
     }
   };
 
@@ -70,9 +78,24 @@ const RegisterScreen: React.FC = () => {
         onChangeText={setPostalCode}
         keyboardType="numeric"
       />
-      <TextInput style={styles.input} placeholder="Estado" value={state} onChangeText={setState} />
-      <TextInput style={styles.input} placeholder="Cidade" value={city} onChangeText={setCity} />
-      <TextInput style={styles.input} placeholder="Endereço" value={address} onChangeText={setAddress} />
+      <TextInput
+        style={styles.input}
+        placeholder="Estado"
+        value={state}
+        onChangeText={setState}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Cidade"
+        value={city}
+        onChangeText={setCity}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Endereço"
+        value={address}
+        onChangeText={setAddress}
+      />
       <Button title="Registrar" onPress={handleRegister} />
     </ScrollView>
   );

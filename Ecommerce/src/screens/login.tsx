@@ -2,21 +2,21 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button } from "@react-native-material/core";
 import { login } from '../services/AuthService';
-import { NewUser, User } from '../types/User';
+import { NewAuth, Auth } from '../types/Auth';
 
 const Login: React.FC = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = async () => {
+    const handleLogin = async (user:NewAuth) => {
         const loginDto = {
             email,
             password,
         };
 
         try {
-            const NewUser = await login(User);
-            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${NewUser.name}`);
+            const NewAuth = await login(user);
+            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${NewAuth.name}`);
         } catch (error) {
             Alert.alert(error.message);
         }
