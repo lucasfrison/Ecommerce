@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { NewProduct } from '../types/Product';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ProductFormProps {
   initialValues?: NewProduct;
@@ -13,51 +13,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
   const [name, setName] = useState(initialValues?.name || '');
   const [description, setDescription] = useState(initialValues?.description || '');
   const [price, setPrice] = useState(initialValues?.price?.toString() || '');
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageBase64, setImageBase64] = useState((initialValues?.image && initialValues.image[0]) || '');
+
+  const handleImagePicker = () => {
+    launchImageLibrary({ mediaType: 'photo', includeBase64: true }, (response) => {
+      if (response.didCancel) {
+        Alert.alert('Cancelled', 'Image selection was cancelled.');
+      } else if (response.errorMessage) {
+        Alert.alert('Error', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        const base64String = response.assets[0].base64;
+        setImageBase64(`data:image/jpeg;base64,${base64String}`);
+      }
+    });
+  };
 
   useEffect(() => {
-    // Carregar a URL da imagem salva no AsyncStorage, se existir
-    const loadSavedImageUrl = async () => {
-      try {
-        const savedImageUrl = await AsyncStorage.getItem(`product_image_${name}`);
-        if (savedImageUrl) {
-          setImageUrl(savedImageUrl);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar URL da imagem do AsyncStorage:', error);
-      }
-    };
+    console.log('Imagem em base64 atualizada:', imageBase64);
+  }, [imageBase64]);
 
-    // Carregar apenas se initialValues estiver definido (edição de produto)
-    if (initialValues) {
-      loadSavedImageUrl();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues?.name]); // Atualizar apenas quando initialValues.name mudar
-
-  const handleSave = async () => {
+  const handleSave = () => {
     const product: NewProduct = {
       name,
       description,
       price: parseFloat(price),
-      image: [imageUrl]
+      image: imageBase64 ? [imageBase64] : []
     };
     onSubmit(product);
-
-    // Salvando a URL da imagem no AsyncStorage para uso futuro
-    try {
-      await AsyncStorage.setItem(`product_image_${name}`, imageUrl);
-    } catch (error) {
-      console.error('Erro ao salvar URL da imagem no AsyncStorage:', error);
-    }
   };
 
   const handleReset = () => {
     setName(initialValues?.name || '');
     setDescription(initialValues?.description || '');
     setPrice(initialValues?.price?.toString() || '');
-    setImageUrl(initialValues?.image?.[0] || '');
+    setImageBase64((initialValues?.image && initialValues.image[0]) || '');
   };
 
   return (
@@ -82,12 +71,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
         onChangeText={setPrice}
         value={price}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Image URL"
-        onChangeText={setImageUrl}
-        value={imageUrl}
-      />
+      <TouchableOpacity onPress={handleImagePicker}>
+        <View style={styles.imagePicker}>
+          {imageBase64 ? (
+            <Image source={{ uri: imageBase64 }} style={styles.image} />
+          ) : (
+            <Button title="Pick an Image" onPress={handleImagePicker} />
+          )}
+        </View>
+      </TouchableOpacity>
       <View style={styles.buttonContainer}>
         <Button
           title="Save"
@@ -119,6 +111,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     marginBottom: 10,
+  },
+  imagePicker: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   buttonContainer: {
     flexDirection: 'row',
