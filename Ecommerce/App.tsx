@@ -1,5 +1,4 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import ProductDetailScreen from "./src/screens/ProductDetailScreen";
@@ -12,72 +11,103 @@ import PaymentScreen from "./src/screens/PaymentScreen";
 import UserListScreen from './src/screens/UserListScreen';
 import EditUserScreen from './src/screens/EditUserScreen';
 import { RootStackParamList } from './src/types/NavigationTypes';
-
+import AdminHome from './src/screens/AdminHome'; // Importe AdminHome
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider, useAuth } from './src/components/AuthContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function App({ navigation }: { navigation: any }) {
-    const [loggedIn, setLoggedIn] = useState(false);
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <MainStack />
+      </NavigationContainer>
+    </AuthProvider>
+  );
+};
 
-    return (
-        <NavigationContainer>
-            <Stack.Navigator
-                screenOptions={{
-                    headerStyle: {
-                        backgroundColor: '#6200ee', // Background color of the header
-                        elevation: 0, // Remove shadow on Android
-                        shadowOpacity: 0, // Remove shadow on iOS
-                        borderBottomWidth: 0, // Remove bottom border on iOS
-                    },
-                    headerTintColor: '#fff', // Text color of the header
-                    headerTitleStyle: {
-                        fontWeight: 'bold', // Font style of the header title
-                    },
+const MainStack: React.FC = () => {
+  const { user, loading, logout } = useAuth();
+
+  if (loading) {
+    return null;
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#6200ee',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      {user ? (
+        <>
+          {user.profileType === 'USER' ? (
+            <>
+              <Stack.Screen
+                name="Home"
+                component={Index}
+                options={{
+                  headerRight: () => (
+                    <TouchableOpacity onPress={logout} style={styles.loginButton}>
+                      <Text style={styles.loginButtonText}>Logout</Text>
+                    </TouchableOpacity>
+                  ),
                 }}
-            >
-                <Stack.Screen
-                    name="Home"
-                    component={Index}
-                    options={({ navigation }) => ({
-                        headerRight: () => (
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('Login')}
-                                style={styles.loginButton}
-                            >
-                                <Text style={styles.loginButtonText}>Login</Text>
-                            </TouchableOpacity>
-                        ),
-                    })}
-                />
-                <Stack.Screen name="Product Details" component={ProductDetailScreen} />
-                <Stack.Screen name="Cart" component={Cart} />
-                <Stack.Screen name="Products Registration" component={CrudProducts} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="Payment" component={PaymentScreen} />
-                <Stack.Screen name="UserList" component={UserListScreen} options={{ title: 'Lista de Usuários' }} />
-                <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: 'Editar Usuário' }} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
-}
+              />
+              <Stack.Screen name="Product Details" component={ProductDetailScreen} />
+              <Stack.Screen name="Cart" component={Cart} />
+              <Stack.Screen name="Payment" component={PaymentScreen} />
+            </>
+          ) : user.profileType === 'ADMIN' ? (
+            <>
+              <Stack.Screen
+                name="Admin Home"
+                component={AdminHome}
+                options={{
+                  headerRight: () => (
+                    <TouchableOpacity onPress={logout} style={styles.loginButton}>
+                      <Text style={styles.loginButtonText}>Logout</Text>
+                    </TouchableOpacity>
+                  ),
+                }}
+              />
+              <Stack.Screen name="Products Registration" component={CrudProducts} />
+              <Stack.Screen name="UserList" component={UserListScreen} options={{ title: 'Lista de Usuários' }} />
+              <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: 'Editar Usuário' }} />
+            </>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f0f0f0', // Example background color
-    },
-    loginButton: {
-        marginRight: 16,
-        padding: 8,
-        backgroundColor: '#6200EE',
-        borderRadius: 4,
-    },
-    loginButtonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    iconButton: {
-        marginRight: 16,
-    },
+  loginButton: {
+    marginRight: 16,
+    padding: 8,
+    backgroundColor: '#6200EE',
+    borderRadius: 4,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
+
+export default App;
