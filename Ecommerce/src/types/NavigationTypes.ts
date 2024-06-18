@@ -8,4 +8,6 @@ export type RootStackParamList = {
     Payment: undefined;
     UserList: undefined;
     EditUser: { userId: string };
+    AdminHome: undefined;
+    'Products Registration': undefined;
 };

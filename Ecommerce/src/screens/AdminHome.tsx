@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Surface } from "@react-native-material/core";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Orders } from '../types/Orders';
+import { getAllOrders } from '../services/OrderService';
+import { Surface } from "@react-native-material/core";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -10,84 +10,63 @@ import { StackNavigationProp } from '@react-navigation/stack';
 type RootStackParamList = {
   Payment: undefined;
   'Products Registration': undefined;
-  'UserList' : undefined;
+  'UserList': undefined;
 };
 
 type AdminHomeNavigationProp = StackNavigationProp<RootStackParamList, 'Products Registration'>;
 
 const AdminHome: React.FC = () => {
-  const [clientOrders, setClientOrders] = useState<Orders[]>([]);
+  const [orders, setOrders] = useState<Orders[]>([]);
   const navigation = useNavigation<AdminHomeNavigationProp>();
 
   useEffect(() => {
-    const getclientOrders = async () => {
-      try {
-        const existingOrders = await AsyncStorage.getItem('order');
-        if (existingOrders) {
-          const orders = JSON.parse(existingOrders);
-          setClientOrders(orders);
-        }
-      } catch (error) {
-        console.error('Erro ao recuperar itens do carrinho: ', error);
-      }
-    };
-
-    getclientOrders();
+    fetchOrders();
   }, []);
 
-  const calculateTotal = (items: Orders[]) => {
-    return items.reduce((total, item) => total + item.total, 0).toFixed(2);
-  };
-
-  const confirmOrder = async (index: number) => {
+  const fetchOrders = async () => {
     try {
-      const updatedOrders = [...clientOrders];
-      updatedOrders.splice(index, 1);
-      setClientOrders(updatedOrders);
-      await AsyncStorage.setItem('order', JSON.stringify(updatedOrders));
+      const ordersData = await getAllOrders();
+      setOrders(ordersData);
     } catch (error) {
-      console.error('Erro ao remover item: ', error);
+      console.error('Erro ao carregar pedidos:', error);
     }
   };
 
-  const navigateToProductsRegistration = () => {
-    navigation.navigate('Products Registration');
+  const calculateTotal = (orders: Orders[]) => {
+    return orders.reduce((total, order) => total + order.total, 0).toFixed(2);
   };
 
-  const navigateToUserList = () => {
-    navigation.navigate('UserList');
-  };
+  const renderItem = ({ item }: { item: Orders }) => (
+    <View style={styles.orderItem}>
+      <View style={styles.itemDetails}>
+        <Text style={styles.itemClientName}>Cliente ID: {item.customerId}</Text>
+        <Text style={styles.itemTotal}>R$ <Text style={styles.bold}>{item.total.toFixed(2)}</Text></Text>
+        <Text style={styles.itemDate}>Data: {new Date(item.orderDate).toLocaleDateString()}</Text>
+        <Text style={styles.itemStatus}>Status: {item.status}</Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Surface elevation={6} category="medium" style={styles.orderInner}>
         <FlatList
-          data={clientOrders}
-          renderItem={({ item, index }) => (
-            <View style={styles.orderItem}>
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemClientName}>{item.ClientName}</Text>
-                <Text style={styles.itemTotal}>R$ <Text style={styles.bold}>{item.total.toFixed(2)}</Text></Text>
-              </View>
-              <TouchableOpacity onPress={() => confirmOrder(index)} style={styles.removeButton}>
-                <AntDesign name="check" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-          )}
+          data={orders}
+          renderItem={renderItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.orderItemList}
         />
         <View style={styles.orderTotal}>
           <Text style={styles.totalText}>Total em pedidos:</Text>
-          <Text style={styles.totalAmount}>R$ {calculateTotal(clientOrders)}</Text>
+          <Text style={styles.totalAmount}>R$ {calculateTotal(orders)}</Text>
         </View>
       </Surface>
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={navigateToProductsRegistration}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Products Registration')}>
           <AntDesign name="plus" size={28} color="white" />
           <Text style={styles.buttonText}>Product Registration</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={navigateToUserList}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserList')}>
           <AntDesign name="plus" size={28} color="white" />
           <Text style={styles.buttonText}>List of Users</Text>
         </TouchableOpacity>
@@ -104,9 +83,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // Para alinhar o conteúdo na vertical
   },
   orderInner: {
-    height: Dimensions.get('window').height / 2 + 75,
-    marginTop: 60,
-    width: Dimensions.get('window').width - 50,
+    height: '70%',
+    marginTop: 20,
+    width: '90%',
     backgroundColor: '#fff',
     justifyContent: 'space-between',
   },
@@ -122,9 +101,9 @@ const styles = StyleSheet.create({
   },
   itemDetails: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   itemClientName: {
     fontSize: 18,
@@ -133,11 +112,16 @@ const styles = StyleSheet.create({
   itemTotal: {
     fontSize: 16,
   },
+  itemDate: {
+    fontSize: 14,
+    color: '#555',
+  },
+  itemStatus: {
+    fontSize: 14,
+    color: '#555',
+  },
   bold: {
     fontWeight: 'bold',
-  },
-  removeButton: {
-    padding: 10,
   },
   orderTotal: {
     flexDirection: 'row',
