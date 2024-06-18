@@ -2,23 +2,28 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Button } from "@react-native-material/core";
 import { login } from '../services/AuthService';
-import { NewAuth, Auth } from '../types/Auth';
+import { NewAuth } from '../types/Auth';
+import { useNavigation } from '@react-navigation/native'; // Importe o hook useNavigation
 
-const Login: React.FC = ({ navigation }) => {
+
+const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigation = useNavigation(); // Obtenha o objeto de navegação usando o hook useNavigation
 
-    const handleLogin = async (user:NewAuth) => {
-        const loginDto = {
+    const handleLogin = async () => {
+        const user: NewAuth = {
             email,
             password,
+            profileType: 'USER' // Defina conforme necessário, pode ser fixo se todos são usuários comuns
         };
 
         try {
-            const NewAuth = await login(user);
-            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${NewAuth.name}`);
+            const userData = await login(user);
+            Alert.alert('Login realizado com sucesso', `Bem-vindo, ${userData.email}`);
         } catch (error) {
-            Alert.alert(error.message);
+            console.error(error);
+            Alert.alert('Erro ao fazer login', 'Verifique suas credenciais e tente novamente.');
         }
     };
 
