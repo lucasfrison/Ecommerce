@@ -33,28 +33,25 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onEdit, onDelete }) 
         }
       ]
     );
-  };
+  };  
 
   return (
     <Surface style={styles.item}>
-      <Image source={{ uri: product.image[0] }} style={styles.image} />
+      <Image source={{ uri: product.image?.[0] }} style={styles.image} />
       <View style={styles.detailsContainer}>
         <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.price}>{product.price}</Text>
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Edit"
-            onPress={() => onEdit(product)}
-            style={styles.button}
-            color="#6200EE"
-          />
-          <Button
-            title="Delete"
-            onPress={handleDeletePress}
-            style={styles.button}
-            color="#6200EE"
-          />
-        </View>
+        <Button
+          title="Edit"
+          onPress={() => onEdit(product)}
+          style={styles.button}
+          color="#6200EE"
+        />
+        <Button
+          title="Delete"
+          onPress={handleDeletePress}
+          style={styles.button}
+          color="#6200EE"
+        />
       </View>
     </Surface>
   );
@@ -83,17 +80,6 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 5,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 10,
   },
   button: {
     width: 80,

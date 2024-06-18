@@ -1,166 +1,164 @@
-import React from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions, FlatList} from 'react-native';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {Button, Snackbar, Surface} from "@react-native-material/core";
-import {StackNavigationProp} from "@react-navigation/stack";
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Surface } from "@react-native-material/core";
+import { Product } from '../types/Product';
+import { AntDesign } from '@expo/vector-icons'; // Importe o ícone desejado
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'; // Importe o tipo StackNavigationProp
 
 type RootStackParamList = {
-    Cart: { productId: number, name: string, price: string, image: string };
+  Payment: undefined; // Defina as rotas disponíveis
 };
 
-type ProductDetailScreenRouteProp = RouteProp<RootStackParamList, 'Cart'>;
-
-let width = Dimensions.get('window').width; // full width
-let height = Dimensions.get('window').height; // full height
-const itemMargin = 10;
-const numColumns = 2;
-
-const itemWidth = (width - itemMargin * (numColumns + 1)) / numColumns;
-
-interface ProductItemProps {
-    id: number;
-    name: string;
-    price: string;
-    image: string;
-}
-
-const ProductItem: React.FC<ProductItemProps> = ({id, name, price, image}) => {
-    const navigation = useNavigation<StackNavigationProp<any>>();
-
-    return (
-        <Surface
-            elevation={4}
-            category="medium"
-            style={styles.item}>
-            <View style={{justifyContent: "center", alignItems: "center"}}>
-                <Image source={{uri: image, headers: {'Accept': 'image/*'}}} style={styles.image}/>
-            </View>
-            <View style={styles.detailsContainer}>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.price}>{price}</Text>
-            </View>
-        </Surface>
-    );
-};
+type CartScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Payment'>;
 
 const Cart: React.FC = () => {
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const navigation = useNavigation<CartScreenNavigationProp>(); // Use o tipo explícito
 
-    const route = useRoute<ProductDetailScreenRouteProp>();
+  useEffect(() => {
+    const getCartItems = async () => {
+      try {
+        const existingCart = await AsyncStorage.getItem('cart');
+        if (existingCart) {
+          const cart = JSON.parse(existingCart);
+          setCartItems(cart);
+        }
+      } catch (error) {
+        console.error('Erro ao recuperar itens do carrinho: ', error);
+      }
+    };
 
-    interface Product {
-        id: number;
-        name: string;
-        price: string;
-        image: string;
+    getCartItems();
+  }, []);
+
+  const calculateTotal = (items: Product[]) => {
+    return items.reduce((total, item) => total + item.price, 0).toFixed(2);
+  };
+
+  const removeItem = async (index: number) => {
+    try {
+      const updatedCart = [...cartItems];
+      updatedCart.splice(index, 1);
+      setCartItems(updatedCart);
+      await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
+    } catch (error) {
+      console.error('Erro ao remover item do carrinho: ', error);
     }
+  };
 
-    const products: Product[] = [
-        {id: 1, name: 'Product 1', price: '$10', image: '../../assets/produtos/img2.png'},
-        {id: 2, name: 'Product 2', price: '$20', image: '../../assets/produtos/img2.png'},
-        {id: 3, name: 'PlayStation 3', price: '$30', image: '../../assets/produtos/img3.jpg'},
-        {id: 4, name: 'Product 4', price: '$40', image: '../../assets/produtos/img2.png'},
-        {id: 5, name: 'Product 5', price: '$50', image: '../../assets/produtos/img2.png'},
-    ];
+  const navigateToPayment = () => {
+    navigation.navigate('Payment');
+  };
 
-    interface ProductItemProps {
-        id: number;
-        name: string;
-        price: string;
-        image: string;
-    }
-
-    return (
-        <View style={styles.cart}>
-            <Surface
-                elevation={6}
-                category="medium"
-                style={styles.cartInner}>
-                <View>
-                    <Surface
-                        elevation={1}
-                        category="medium"
-                        style={styles.lojaContainer}>
-                        <View style={styles.loja}>
-                            <FlatList
-                                data={products}
-                                renderItem={({item}) => <ProductItem id={item.id} name={item.name} price={item.price} image={item.image}/>}
-                                keyExtractor={item => item.id.toString()}
-                                numColumns={2}
-                                contentContainerStyle={styles.flatList}
-                            />
-                        </View>
-                    </Surface>
-                    <View style = {styles.cartView}>
-                      <Text style={{color: "#4E4187"}}>Total:</Text>
-                      <Text style={{color: "#4E4187"}}>R$2000,00</Text>
-                    </View>
-                </View>
-            </Surface>
+  return (
+    <View style={styles.cart}>
+      <Surface elevation={6} category="medium" style={styles.cartInner}>
+        <FlatList
+          data={cartItems}
+          renderItem={({ item, index }) => (
+            <View style={styles.cartItem}>
+              <View style={styles.itemDetails}>
+                <Text style={styles.itemName}>{item.name}</Text>
+                <Text style={styles.itemPrice}>R$ <Text style={styles.bold}>{item.price.toFixed(2)}</Text></Text>
+              </View>
+              <TouchableOpacity onPress={() => removeItem(index)} style={styles.removeButton}>
+                <AntDesign name="delete" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.cartItemList}
+        />
+        <View style={styles.cartTotal}>
+          <Text style={styles.totalText}>Total:</Text>
+          <Text style={styles.totalAmount}>R$ {calculateTotal(cartItems)}</Text>
         </View>
-    );
+      </Surface>
+      <TouchableOpacity style={styles.paymentButton} onPress={navigateToPayment}>
+        <Text style={styles.paymentButtonText}>Prosseguir para Pagamento</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-
-    cart: {
-        flex: 1,
-        backgroundColor: "#4E4187",
-        alignItems: "center",
-    },
-    flatList: {
-        paddingHorizontal: itemMargin,
-        paddingTop: itemMargin,
-        flex: 1,
-        justifyContent: 'flex-start', // Adjusts the container's height based on its children
-        flexGrow: 1,
-    },
-    cartInner: {
-        height: height/2 + 75,
-        marginTop: 60,
-        width: width - 50,
-        backgroundColor: "#F3DE2C",
-        justifyContent: "space-between",
-    },
-    cartView: {
-        flexDirection: "row",
-        justifyContent:"space-between",
-        marginTop: 15,
-        marginHorizontal: 15
-    },
-    lojaContainer: {
-        height: height/2 + 20,
-    },
-    loja: {
-        height: height/2,
-        marginBottom: 10,
-    },
-    item: {
-        margin: itemMargin,
-        marginBottom: 0,
-        borderRadius: 8,
-        backgroundColor: '#fff',
-        elevation: 3,
-        width: width/3 + 5,
-    },
-    image: {
-        resizeMode: 'cover',
-        width: width / 4,
-        height: width / 4,
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
-    },
-    detailsContainer: {
-        flex: 1,
-        padding: 10,
-    },
-    name: {
-        fontSize: 18,
-    },
-    price: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginTop: 5,
-    },
+  cart: {
+    flex: 1,
+    backgroundColor: '#4E4187',
+    alignItems: 'center',
+  },
+  cartInner: {
+    height: Dimensions.get('window').height / 2 + 75,
+    marginTop: 60,
+    width: Dimensions.get('window').width - 50,
+    backgroundColor: '#F3DE2C',
+    justifyContent: 'space-between',
+  },
+  cartItemList: {
+    paddingHorizontal: 10,
+  },
+  cartItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  itemDetails: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemPrice: {
+    fontSize: 16,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  removeButton: {
+    padding: 10,
+  },
+  cartTotal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  totalText: {
+    color: '#4E4187',
+    fontSize: 20,
+  },
+  totalAmount: {
+    color: '#4E4187',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  paymentButton: {
+    backgroundColor: '#4E4187',
+    paddingVertical: 15,
+    marginBottom: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    width: Dimensions.get('window').width - 50,
+  },
+  paymentButtonText: {
+    color: '#F3DE2C',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default Cart;

@@ -1,33 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { NewProduct } from '../types/Product';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ProductFormProps {
   initialValues?: NewProduct;
   onSubmit: (product: NewProduct) => void;
+  onCancel: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) => {
+const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCancel }) => {
   const [name, setName] = useState(initialValues?.name || '');
   const [description, setDescription] = useState(initialValues?.description || '');
   const [price, setPrice] = useState(initialValues?.price?.toString() || '');
-  const [image, setImage] = useState((initialValues?.image && initialValues.image[0]) || '');
+  const [imageUrl, setImageUrl] = useState('');
 
-  const handleSave = () => {
+  useEffect(() => {
+    // Carregar a URL da imagem salva no AsyncStorage, se existir
+    const loadSavedImageUrl = async () => {
+      try {
+        const savedImageUrl = await AsyncStorage.getItem(`product_image_${name}`);
+        if (savedImageUrl) {
+          setImageUrl(savedImageUrl);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar URL da imagem do AsyncStorage:', error);
+      }
+    };
+
+    // Carregar apenas se initialValues estiver definido (edição de produto)
+    if (initialValues) {
+      loadSavedImageUrl();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues?.name]); // Atualizar apenas quando initialValues.name mudar
+
+  const handleSave = async () => {
     const product: NewProduct = {
       name,
       description,
       price: parseFloat(price),
-      image: image ? [image] : []
+      image: [imageUrl]
     };
     onSubmit(product);
+
+    // Salvando a URL da imagem no AsyncStorage para uso futuro
+    try {
+      await AsyncStorage.setItem(`product_image_${name}`, imageUrl);
+    } catch (error) {
+      console.error('Erro ao salvar URL da imagem no AsyncStorage:', error);
+    }
   };
 
   const handleReset = () => {
     setName(initialValues?.name || '');
     setDescription(initialValues?.description || '');
     setPrice(initialValues?.price?.toString() || '');
-    setImage((initialValues?.image && initialValues.image[0]) || '');
+    setImageUrl(initialValues?.image?.[0] || '');
   };
 
   return (
@@ -55,8 +85,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) =>
       <TextInput
         style={styles.input}
         placeholder="Image URL"
-        onChangeText={setImage}
-        value={image}
+        onChangeText={setImageUrl}
+        value={imageUrl}
       />
       <View style={styles.buttonContainer}>
         <Button
@@ -65,7 +95,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit }) =>
         />
         <Button
           title="Cancel"
-          onPress={handleReset}
+          onPress={() => {
+            handleReset();
+            onCancel();
+          }}
           color="#888"
         />
       </View>

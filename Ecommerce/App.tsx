@@ -6,10 +6,10 @@ import ProductDetailScreen from "./src/screens/ProductDetailScreen";
 import Index from "./src/screens/Index";
 import Cart from "./src/screens/cart";
 import CrudProducts from "./src/screens/CrudProducts";
-import LoginScreen from "./src/screens/login"; 
-import RegisterScreen from "./src/screens/register";
 import Login from "./src/screens/login";
 import Register from "./src/screens/register";
+import PaymentScreen from "./src/screens/PaymentScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +51,7 @@ export default function App({ navigation }: { navigation: any }) {
                 <Stack.Screen name="Products Registration" component={CrudProducts} />
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="Payment" component={PaymentScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

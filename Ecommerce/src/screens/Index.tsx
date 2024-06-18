@@ -1,15 +1,26 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, TextInput } from 'react-native';
 import ProductListScreen from "../components/ItemsList";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Avatar, Button } from '@react-native-material/core';
 import { Backdrop, AppBar, IconButton,} from "@react-native-material/core";
 
 export default function Index({ navigation }: { navigation: any }) {
+    const [searchQuery, setSearchQuery] = useState('');
+
     return (
         <View style={styles.container}>
+            <View style={styles.searchContainer}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search by name"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                />
+                <Icon name="magnify" size={24} color="gray" style={styles.searchIcon} />
+            </View>
             <View style={styles.content}>
-                <ProductListScreen />
+                <ProductListScreen searchQuery={searchQuery} />
             </View>
             <View style={styles.bottomBar}>
                 <TouchableOpacity
@@ -34,6 +45,25 @@ export default function Index({ navigation }: { navigation: any }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 8,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        margin: 8,
+        height: 40,
+    },
+    searchInput: {
+        flex: 1,
+        height: '100%',
+        paddingLeft: 8,
+    },
+    searchIcon: {
+        padding: 8,
     },
     content: {
         flex: 1,
