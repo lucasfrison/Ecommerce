@@ -35,9 +35,24 @@ const AdminHome: React.FC = () => {
     getclientOrders();
   }, []);
 
-  const calculateTotal = (items: Orders[]) => {
-    return items.reduce((total, item) => total + item.total, 0).toFixed(2);
+  const calculateTotal = (order: Orders) => {
+    // Calculate the total price by summing the price of all products
+    const totalPrice = order.products.reduce((total, product) => total + product.price, 0);
+    return totalPrice.toFixed(2); // Return total price formatted to 2 decimal places
   };
+  
+  const calculateAllTotal = (orders: Orders[]) => {
+    return orders.reduce((accumulatedTotal, currentOrder) => {
+      // Calculate the total price for each order's products
+      const orderTotalPrice = currentOrder.products.reduce((productTotal, product) => {
+        return productTotal + product.price;
+      }, 0);
+  
+      // Add the order's total price to the accumulated total
+      return accumulatedTotal + orderTotalPrice;
+    }, 0);
+  };
+  
 
   const confirmOrder = async (index: number) => {
     try {
@@ -67,7 +82,7 @@ const AdminHome: React.FC = () => {
             <View style={styles.orderItem}>
               <View style={styles.itemDetails}>
                 <Text style={styles.itemClientName}>{item.ClientName}</Text>
-                <Text style={styles.itemTotal}>R$ <Text style={styles.bold}>{item.total.toFixed(2)}</Text></Text>
+                <Text style={styles.itemTotal}>R$ <Text style={styles.bold}>{calculateTotal(item)}</Text></Text>
               </View>
               <TouchableOpacity onPress={() => confirmOrder(index)} style={styles.removeButton}>
                 <AntDesign name="check" size={24} color="black" />
@@ -79,7 +94,7 @@ const AdminHome: React.FC = () => {
         />
         <View style={styles.orderTotal}>
           <Text style={styles.totalText}>Total em pedidos:</Text>
-          <Text style={styles.totalAmount}>R$ {calculateTotal(clientOrders)}</Text>
+          <Text style={styles.totalAmount}>R$ {calculateAllTotal(clientOrders)}</Text>
         </View>
       </Surface>
       <View style={styles.bottomBar}>
