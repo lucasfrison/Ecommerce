@@ -1,6 +1,9 @@
+import { Product } from "./Product";
+
 export interface Orders {
     id: string;
     ClientName: string;
+    products: [Product];
     total: number;
     customerId: string;
     orderDate: string; 
@@ -13,4 +16,4 @@ export interface Orders {
     quantity: number;
     price: number;
   }
-  
+

@@ -21,7 +21,7 @@ const UserListScreen: React.FC = () => {
       const usersData = await getAllUsers();
       setUsers(usersData);
     } catch (error) {
-      console.error('Erro ao carregar usuários:', error);
+      console.error('Error loading users:', error);
     }
   };
 
@@ -38,7 +38,7 @@ const UserListScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lista de Usuários</Text>
+      <Text style={styles.title}>User List</Text>
       <FlatList
         data={users}
         renderItem={renderItem}

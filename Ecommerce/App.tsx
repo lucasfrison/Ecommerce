@@ -11,7 +11,7 @@ import PaymentScreen from "./src/screens/PaymentScreen";
 import UserListScreen from './src/screens/UserListScreen';
 import EditUserScreen from './src/screens/EditUserScreen';
 import { RootStackParamList } from './src/types/NavigationTypes';
-import AdminHome from './src/screens/AdminHome'; // Importe AdminHome
+import AdminHome from './src/screens/AdminHome';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, useAuth } from './src/components/AuthContext';
 
@@ -82,8 +82,8 @@ const MainStack: React.FC = () => {
                 }}
               />
               <Stack.Screen name="Products Registration" component={CrudProducts} />
-              <Stack.Screen name="UserList" component={UserListScreen} options={{ title: 'Lista de Usuários' }} />
-              <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: 'Editar Usuário' }} />
+              <Stack.Screen name="UserList" component={UserListScreen}  />
+              <Stack.Screen name="EditUser" component={EditUserScreen} />
             </>
           ) : null}
         </>

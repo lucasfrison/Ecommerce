@@ -34,63 +34,63 @@ const EditUserScreen: React.FC = () => {
       setAddress(userData.address);
       setProfilePicture(userData.profilePicture);
     } catch (error) {
-      console.error('Erro ao carregar usuário:', error);
+      console.error('Error loading user:', error);
     }
   };
 
   const handleUpdateUser = async () => {
     try {
       await updateUser(userId, { phone, postalCode, state, city, address, profilePicture });
-      alert('Usuário atualizado com sucesso!');
+      alert('User updated successfully!');
     } catch (error) {
-      console.error('Erro ao atualizar usuário:', error);
+      console.error('Error updating user:', error);
     }
   };
 
   if (!user) {
-    return <Text>Carregando...</Text>;
+    return <Text>Loading...</Text>;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Editar Usuário</Text>
+      <Text style={styles.title}>Edit User</Text>
       <TextInput
         style={styles.input}
-        placeholder="Telefone"
+        placeholder="Telephone"
         value={phone}
         onChangeText={setPhone}
       />
       <TextInput
         style={styles.input}
-        placeholder="Código Postal"
+        placeholder="Postal Code"
         value={postalCode}
         onChangeText={setPostalCode}
       />
       <TextInput
         style={styles.input}
-        placeholder="Estado"
+        placeholder="State"
         value={state}
         onChangeText={setState}
       />
       <TextInput
         style={styles.input}
-        placeholder="Cidade"
+        placeholder="City"
         value={city}
         onChangeText={setCity}
       />
       <TextInput
         style={styles.input}
-        placeholder="Endereço"
+        placeholder="Address"
         value={address}
         onChangeText={setAddress}
       />
       <TextInput
         style={styles.input}
-        placeholder="Foto de Perfil"
+        placeholder="Profile picture"
         value={profilePicture}
         onChangeText={setProfilePicture}
       />
-      <Button title="Atualizar" onPress={handleUpdateUser} />
+      <Button title="Update" onPress={handleUpdateUser} />
     </View>
   );
 };

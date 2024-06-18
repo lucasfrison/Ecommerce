@@ -29,24 +29,24 @@ const Register: React.FC = () => {
 
     try {
       const userData = await createUser(newUser);
-      alert('Cadastro realizado com sucesso!');
+      alert('Registration completed successfully!');
     } catch (error) {
       console.error(error); 
 
       if (error instanceof Error) {
         Alert.alert('Erro', error.message);
       } else {
-        Alert.alert('Erro', 'Ocorreu um erro desconhecido.');
+        Alert.alert('Erro', 'An unknown error has occurred.');
       }
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Cadastro</Text>
+      <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nome"
+        placeholder="Name"
         value={name}
         onChangeText={setName}
       />
@@ -59,14 +59,14 @@ const Register: React.FC = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <TextInput
         style={styles.input}
-        placeholder="Telefone"
+        placeholder="Telephone"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
@@ -80,23 +80,23 @@ const Register: React.FC = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Estado"
+        placeholder="State"
         value={state}
         onChangeText={setState}
       />
       <TextInput
         style={styles.input}
-        placeholder="Cidade"
+        placeholder="City"
         value={city}
         onChangeText={setCity}
       />
       <TextInput
         style={styles.input}
-        placeholder="Endereço"
+        placeholder="Address"
         value={address}
         onChangeText={setAddress}
       />
-      <Button title="Registrar" onPress={handleRegister} />
+      <Button title="Register" onPress={handleRegister} />
     </ScrollView>
   );
 };

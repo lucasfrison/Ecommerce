@@ -20,15 +20,17 @@ const AdminHome: React.FC = () => {
   const navigation = useNavigation<AdminHomeNavigationProp>();
 
   useEffect(() => {
+
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
+
     try {
       const ordersData = await getAllOrders();
       setOrders(ordersData);
     } catch (error) {
-      console.error('Erro ao carregar pedidos:', error);
+      console.error('Error removing item: ', error);
     }
   };
 
