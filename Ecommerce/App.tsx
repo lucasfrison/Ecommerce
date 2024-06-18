@@ -82,8 +82,8 @@ const MainStack: React.FC = () => {
                 }}
               />
               <Stack.Screen name="Products Registration" component={CrudProducts} />
-              <Stack.Screen name="UserList" component={UserListScreen} options={{ title: 'Lista de Usuários' }} />
-              <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: 'Editar Usuário' }} />
+              <Stack.Screen name="UserList" component={UserListScreen}  />
+              <Stack.Screen name="EditUser" component={EditUserScreen} />
             </>
           ) : null}
         </>

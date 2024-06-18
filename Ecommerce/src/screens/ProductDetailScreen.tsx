@@ -37,7 +37,7 @@ const ProductDetailScreen: React.FC = () => {
       // Exibir um aviso de sucesso (opcional)
       alert('Produto adicionado ao carrinho!');
     } catch (error) {
-      console.error('Erro ao adicionar produto ao carrinho: ', error);
+      console.error('Error adding product to cart: ', error);
     }
   };
 
@@ -52,12 +52,12 @@ const ProductDetailScreen: React.FC = () => {
         </View>
       )}
       <Text style={styles.price}>R$ {product.price}</Text>
-      <Text style={styles.bold}>Em até 10x sem juros</Text>
-      <Text>Entrega Grátis em: <Text style={styles.bold}>7 dias úteis</Text></Text>
+      <Text style={styles.bold}>Up to 10 interest-free installments</Text>
+      <Text>Entrega Grátis em: <Text style={styles.bold}>7 working days</Text></Text>
       <Text style={styles.description}>{product.description}</Text>
       <TouchableOpacity onPress={addToCart}>
         <View style={styles.addToCartButton}>
-          <Text style={styles.addToCartText}>Adicionar ao carrinho</Text>
+          <Text style={styles.addToCartText}>Add to Cart</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>

@@ -28,7 +28,7 @@ const AdminHome: React.FC = () => {
           setClientOrders(orders);
         }
       } catch (error) {
-        console.error('Erro ao recuperar itens do carrinho: ', error);
+        console.error('Error retrieving cart items: ', error);
       }
     };
 
@@ -61,7 +61,7 @@ const AdminHome: React.FC = () => {
       setClientOrders(updatedOrders);
       await AsyncStorage.setItem('order', JSON.stringify(updatedOrders));
     } catch (error) {
-      console.error('Erro ao remover item: ', error);
+      console.error('Error removing item: ', error);
     }
   };
 
@@ -93,7 +93,7 @@ const AdminHome: React.FC = () => {
           contentContainerStyle={styles.orderItemList}
         />
         <View style={styles.orderTotal}>
-          <Text style={styles.totalText}>Total em pedidos:</Text>
+          <Text style={styles.totalText}>Total in orders: </Text>
           <Text style={styles.totalAmount}>R$ {calculateAllTotal(clientOrders)}</Text>
         </View>
       </Surface>

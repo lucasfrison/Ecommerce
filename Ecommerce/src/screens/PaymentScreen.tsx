@@ -4,15 +4,15 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 const PaymentScreen: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Detalhes de Pagamento</Text>
+      <Text style={styles.title}>Payment Details</Text>
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Número do Cartão" keyboardType="numeric" />
-        <TextInput style={styles.input} placeholder="Nome do Titular do Cartão" />
-        <TextInput style={styles.input} placeholder="Data de Validade" keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Card number" keyboardType="numeric" />
+        <TextInput style={styles.input} placeholder="Name of card holder" />
+        <TextInput style={styles.input} placeholder="Expiration date" keyboardType="numeric" />
         <TextInput style={styles.input} placeholder="CVV" keyboardType="numeric" secureTextEntry />
       </View>
       <TouchableOpacity style={styles.payButton}>
-        <Text style={styles.payButtonText}>Pagar</Text>
+        <Text style={styles.payButtonText}>Pay</Text>
       </TouchableOpacity>
     </View>
   );

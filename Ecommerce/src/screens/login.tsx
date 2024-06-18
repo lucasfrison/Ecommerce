@@ -22,10 +22,10 @@ const Login: React.FC = () => {
     try {
       const userData = await login(user);
       loginUser(userData);
-      Alert.alert('Login realizado com sucesso', `Bem-vindo, ${userData.email}`);
+      Alert.alert('Login successfully', `Welcome, ${userData.email}`);
     } catch (error) {
       console.error(error);
-      Alert.alert('Erro ao fazer login', 'Verifique suas credenciais e tente novamente.');
+      Alert.alert('Error logging in', 'Please check your credentials and try again.');
     }
   };
 
@@ -41,14 +41,14 @@ const Login: React.FC = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Entrar" onPress={handleLogin} />
+      <Button title="Enter" onPress={handleLogin} />
       <Button
-        title="Não tem uma conta? Cadastre-se"
+        title="Don't have an account? Register"
         onPress={() => navigation.navigate('Register')}
         style={styles.registerButton}
       />

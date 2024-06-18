@@ -30,7 +30,7 @@ const Cart: React.FC = () => {
           setCartItems(cart);
         }
       } catch (error) {
-        console.error('Erro ao recuperar itens do carrinho: ', error);
+        console.error('Error retrieving cart items: ', error);
       }
     };
 
@@ -48,7 +48,7 @@ const Cart: React.FC = () => {
       setCartItems(updatedCart);
       await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
     } catch (error) {
-      console.error('Erro ao remover item do carrinho: ', error);
+      console.error('Error removing item from cart: ', error);
     }
   };
 
@@ -76,7 +76,7 @@ const Cart: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao criar pedido');
+        throw new Error('Error creating order');
       }
 
       // Limpar o carrinho após criar o pedido
@@ -85,8 +85,8 @@ const Cart: React.FC = () => {
       // Navegar para a tela de pagamento ou exibir uma mensagem de sucesso
       navigation.navigate('Payment');
     } catch (error) {
-      console.error('Erro ao criar pedido:', error);
-      alert('Erro ao criar pedido. Por favor, tente novamente.');
+      console.error('Error creating order:', error);
+      alert('Error creating order. Please try again.');
     }
   };
 
@@ -115,7 +115,7 @@ const Cart: React.FC = () => {
         </View>
       </Surface>
       <TouchableOpacity style={styles.paymentButton} onPress={createOrder}>
-        <Text style={styles.paymentButtonText}>Prosseguir para Pagamento</Text>
+        <Text style={styles.paymentButtonText}>Proceed to Payment</Text>
       </TouchableOpacity>
     </View>
   );
