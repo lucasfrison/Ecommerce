@@ -8,6 +8,7 @@ export interface User {
     state: string;
     city: string;
     address: string;
+    profilePicture: string;
     profileType: string;
   }
   
@@ -20,6 +21,7 @@ export interface User {
     state: string;
     city: string;
     address: string;
+    profilePicture: string;
     profileType: string;
   }
 

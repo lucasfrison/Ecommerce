@@ -4,7 +4,7 @@ import { Button } from '@react-native-material/core';
 import { login } from '../services/AuthService';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../components/AuthContext';
-import { NewAuth } from '../types/Auth'; // Se necessário importar o tipo NewAuth
+import { NewAuth } from '../types/Auth'; 
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -52,6 +52,11 @@ const Login: React.FC = () => {
         onPress={() => navigation.navigate('Register')}
         style={styles.registerButton}
       />
+      <Button
+                title="Editar Perfil"
+                onPress={() => navigation.navigate('UserList')}
+                style={styles.registerButton}
+            />
     </ScrollView>
   );
 };
