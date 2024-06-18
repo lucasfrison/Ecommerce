@@ -11,7 +11,7 @@ import PaymentScreen from "./src/screens/PaymentScreen";
 import UserListScreen from './src/screens/UserListScreen';
 import EditUserScreen from './src/screens/EditUserScreen';
 import { RootStackParamList } from './src/types/NavigationTypes';
-import AdminHome from './src/screens/AdminHome'; // Importe AdminHome
+import AdminHome from './src/screens/AdminHome';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider, useAuth } from './src/components/AuthContext';
 
