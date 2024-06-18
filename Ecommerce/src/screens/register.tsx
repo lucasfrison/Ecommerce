@@ -29,7 +29,7 @@ const Register: React.FC = () => {
 
     try {
       const userData = await createUser(newUser);
-      Alert.alert('Cadastro realizado com sucesso', `Bem-vindo, ${userData.name}`);
+      alert('Cadastro realizado com sucesso!');
     } catch (error) {
       console.error(error); 
 

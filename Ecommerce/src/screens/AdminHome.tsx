@@ -2,28 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Surface } from "@react-native-material/core";
-import { Orders } from '../types/orders';
-import { AntDesign } from '@expo/vector-icons'; // Importe o ícone desejado
+import { Orders } from '../types/Orders';
+import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack'; // Importe o tipo StackNavigationProp
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
-  Payment: undefined; // Defina as rotas disponíveis
+  Payment: undefined;
+  'Products Registration': undefined;
 };
 
-type orderScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Payment'>;
+type AdminHomeNavigationProp = StackNavigationProp<RootStackParamList, 'Products Registration'>;
 
 const AdminHome: React.FC = () => {
-  const [clientOrders, setclientOrders] = useState<Orders[]>([]);
-  const navigation = useNavigation<orderScreenNavigationProp>(); // Use o tipo explícito
+  const [clientOrders, setClientOrders] = useState<Orders[]>([]);
+  const navigation = useNavigation<AdminHomeNavigationProp>();
 
   useEffect(() => {
     const getclientOrders = async () => {
       try {
-        const existingorder = await AsyncStorage.getItem('order');
-        if (existingorder) {
-          const order = JSON.parse(existingorder);
-          setclientOrders(order);
+        const existingOrders = await AsyncStorage.getItem('order');
+        if (existingOrders) {
+          const orders = JSON.parse(existingOrders);
+          setClientOrders(orders);
         }
       } catch (error) {
         console.error('Erro ao recuperar itens do carrinho: ', error);
@@ -39,21 +40,21 @@ const AdminHome: React.FC = () => {
 
   const confirmOrder = async (index: number) => {
     try {
-      const updatedorder = [...clientOrders];
-      updatedorder.splice(index, 1);
-      setclientOrders(updatedorder);
-      await AsyncStorage.setItem('order', JSON.stringify(updatedorder));
+      const updatedOrders = [...clientOrders];
+      updatedOrders.splice(index, 1);
+      setClientOrders(updatedOrders);
+      await AsyncStorage.setItem('order', JSON.stringify(updatedOrders));
     } catch (error) {
       console.error('Erro ao remover item: ', error);
     }
   };
 
-  const navigateToPayment = () => {
-    navigation.navigate('Payment');
+  const navigateToProductsRegistration = () => {
+    navigation.navigate('Products Registration');
   };
 
   return (
-    <View style={styles.order}>
+    <View style={styles.container}>
       <Surface elevation={6} category="medium" style={styles.orderInner}>
         <FlatList
           data={clientOrders}
@@ -61,10 +62,10 @@ const AdminHome: React.FC = () => {
             <View style={styles.orderItem}>
               <View style={styles.itemDetails}>
                 <Text style={styles.itemClientName}>{item.ClientName}</Text>
-                <Text style={styles.itemtotal}>R$ <Text style={styles.bold}>{item.total.toFixed(2)}</Text></Text>
+                <Text style={styles.itemTotal}>R$ <Text style={styles.bold}>{item.total.toFixed(2)}</Text></Text>
               </View>
               <TouchableOpacity onPress={() => confirmOrder(index)} style={styles.removeButton}>
-                <AntDesign ClientName="check" size={24} color="black" />
+                <AntDesign name="check" size={24} color="black" />
               </TouchableOpacity>
             </View>
           )}
@@ -76,18 +77,22 @@ const AdminHome: React.FC = () => {
           <Text style={styles.totalAmount}>R$ {calculateTotal(clientOrders)}</Text>
         </View>
       </Surface>
-      <TouchableOpacity style={styles.paymentButton} onPress={navigateToPayment}>
-        <Text style={styles.paymentButtonText}>Prosseguir para Pagamento</Text>
-      </TouchableOpacity>
+      <View style={styles.bottomBar}>
+        <TouchableOpacity style={styles.button} onPress={navigateToProductsRegistration}>
+          <AntDesign name="plus" size={28} color="white" />
+          <Text style={styles.buttonText}>Product Registration</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  order: {
+  container: {
     flex: 1,
     backgroundColor: '#BDD4E7',
     alignItems: 'center',
+    justifyContent: 'space-between', // Para alinhar o conteúdo na vertical
   },
   orderInner: {
     height: Dimensions.get('window').height / 2 + 75,
@@ -106,12 +111,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
     paddingVertical: 10,
   },
-  itemImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
   itemDetails: {
     flex: 1,
     flexDirection: 'row',
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  itemtotal: {
+  itemTotal: {
     fontSize: 16,
   },
   bold: {
@@ -146,18 +145,25 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  paymentButton: {
-    backgroundColor: '#4E4187',
-    paddingVertical: 15,
-    marginBottom: 20,
-    borderRadius: 8,
+  button: {
+    flex: 1,
     alignItems: 'center',
-    width: Dimensions.get('window').width - 50,
+    justifyContent: 'center',
   },
-  paymentButtonText: {
-    color: '#4E4187',
+  buttonText: {
+    color: 'white',
     fontSize: 18,
-    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#6200EE',
+    padding: 10,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 60,
   },
 });
 
