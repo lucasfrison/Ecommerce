@@ -1,7 +1,29 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { updateOrderStatus } from '../services/OrderService'; // Supondo que haja uma função para atualizar o status do pedido
+
+type RootStackParamList = {
+  Payment: { orderId: string };
+};
+
+type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'Payment'>;
 
 const PaymentScreen: React.FC = () => {
+  const route = useRoute<PaymentScreenRouteProp>();
+  const { orderId } = route.params;
+
+  const handlePayment = async () => {
+    try {
+      await updateOrderStatus(orderId, 'APPROVED');
+      // Navegar para a tela de confirmação de pagamento ou exibir uma mensagem de sucesso
+      alert('Pagamento realizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao processar pagamento:', error);
+      alert('Erro ao processar pagamento. Por favor, tente novamente.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detalhes de Pagamento</Text>
@@ -11,7 +33,7 @@ const PaymentScreen: React.FC = () => {
         <TextInput style={styles.input} placeholder="Data de Validade" keyboardType="numeric" />
         <TextInput style={styles.input} placeholder="CVV" keyboardType="numeric" secureTextEntry />
       </View>
-      <TouchableOpacity style={styles.payButton}>
+      <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
         <Text style={styles.payButtonText}>Pagar</Text>
       </TouchableOpacity>
     </View>

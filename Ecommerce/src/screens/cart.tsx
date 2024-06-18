@@ -58,7 +58,7 @@ const Cart: React.FC = () => {
         customerId: userId,
         total: Number(calculateTotal(cartItems)),
         orderDate: new Date().toISOString(),
-        status: 'APPROVED',
+        status: 'PENDING',
         orderItems: cartItems.map(item => ({
           productId: item.id,
           quantity: 1, // Exemplo: Quantidade fixa, ajuste conforme necessário
