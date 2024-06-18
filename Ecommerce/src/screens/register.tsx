@@ -4,7 +4,7 @@ import { Button } from "@react-native-material/core";
 import { createUser } from '../services/UserService';
 import { NewUser } from '../types/User';
 
-const RegisterScreen: React.FC = () => {
+const Register: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +24,7 @@ const RegisterScreen: React.FC = () => {
       state,
       city,
       address,
-      profileType: 'USER' // Defina o tipo de perfil conforme necessário
+      profileType: 'USER' 
     };
 
     try {
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterScreen;
+export default Register;
