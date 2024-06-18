@@ -8,6 +8,7 @@ import Cart from "./src/screens/cart";
 import CrudProducts from "./src/screens/CrudProducts";
 import LoginScreen from "./src/screens/login"; 
 import RegisterScreen from "./src/screens/register";
+import PaymentScreen from "./src/screens/PaymentScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ export default function App({ navigation }: { navigation: any }) {
                 <Stack.Screen name="Products Registration" component={CrudProducts} />
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="Register" component={RegisterScreen} />
+                <Stack.Screen name="Payment" component={PaymentScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

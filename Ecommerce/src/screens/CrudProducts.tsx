@@ -67,7 +67,7 @@ const CrudProducts: React.FC = () => {
   const renderProductItem = ({ item }: { item: Product }) => (
     <Surface style={styles.item}>
       <Image 
-        source={{ uri: item.image?.[0] ?? 'default_image_url', headers: { 'Accept': 'image/*' } }} 
+        source={{ uri: item.image?.[0] ?? 'default_image_url' }} 
         style={styles.image} 
       />
       <View style={styles.detailsContainer}>
