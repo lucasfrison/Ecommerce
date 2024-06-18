@@ -9,9 +9,12 @@ import CrudProducts from "./src/screens/CrudProducts";
 import Login from "./src/screens/login";
 import Register from "./src/screens/register";
 import PaymentScreen from "./src/screens/PaymentScreen";
+import UserListScreen from './src/screens/UserListScreen';
+import EditUserScreen from './src/screens/EditUserScreen';
+import { RootStackParamList } from './src/types/NavigationTypes';
 
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App({ navigation }: { navigation: any }) {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -52,6 +55,8 @@ export default function App({ navigation }: { navigation: any }) {
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="Payment" component={PaymentScreen} />
+                <Stack.Screen name="UserList" component={UserListScreen} options={{ title: 'Lista de Usuários' }} />
+                <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: 'Editar Usuário' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -3,19 +3,19 @@ import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-nati
 import { Button } from "@react-native-material/core";
 import { login } from '../services/AuthService';
 import { NewAuth } from '../types/Auth';
-import { useNavigation } from '@react-navigation/native'; // Importe o hook useNavigation
+import { useNavigation } from '@react-navigation/native'; 
 
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigation = useNavigation(); // Obtenha o objeto de navegação usando o hook useNavigation
+    const navigation = useNavigation(); 
 
     const handleLogin = async () => {
         const user: NewAuth = {
             email,
             password,
-            profileType: 'USER' // Defina conforme necessário, pode ser fixo se todos são usuários comuns
+            profileType: 'USER' 
         };
 
         try {
@@ -48,6 +48,11 @@ const Login: React.FC = () => {
             <Button
                 title="Não tem uma conta? Cadastre-se"
                 onPress={() => navigation.navigate('Register')}
+                style={styles.registerButton}
+            />
+            <Button
+                title="Editar Perfil"
+                onPress={() => navigation.navigate('UserList')}
                 style={styles.registerButton}
             />
         </ScrollView>
